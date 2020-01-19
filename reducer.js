@@ -151,12 +151,166 @@ store.dispatch({
   todo: 'buy sushi'
 })
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-so nbow we also have posts
-  
-  
-  
-  
+so now we also have posts
+look at the diagram, we completed the dispatch + store
+
+
+
+
+
+
+now let's go to our app:
+
+npm install redux react-redux
+create a reducers folder (more than 1 reducer in big apps)
+create rootReducer.js
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
+index.js:
+==========
+import React from 'react';
+import ReactDOM from 'react-dom';
+import './index.css';
+import App from './App';
+import {createStore} from 'redux';
+import {Provider} from 'react-redux';
+// the provider will wrap our App component
+// will provide our applciation with the store
+import rootReducer from './reducers/rootReducer'
+
+const store = createStore(rootReducer)
+// how do we associate how store with react? second package
+ReactDOM.render(<Provider store={store}><App /></Provider>, 
+        document.getElementById('root'));
+
+// lets create reducers folder - becuase when the app
+// gets bigger it has more then 1 reducrer  
+
+rootReducer.js:
+===============
+const initState = {
+    posts: []
+}
+const rootReducer = (state = initState, action) => {
+    return state
+};
+
+export default rootReducer
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+ 
+ now we'll replace the store data with posts from json place holder
+to use them in the store
+go to json place holder posts and take the first 3 posts:
+only id, title, body
+remove componentDidMount from the Home
+also remove the state object from Home 
+we need HOC to connect with the redux store
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+rootReducer.js
+==============
+  const initState = {
+    posts: [
+        {
+            "id": 1,
+            "title": "sunt aut facere repellat provident occaecati excepturi optio reprehenderit",
+            "body": "quia et suscipit\nsuscipit recusandae consequuntur expedita et cum\nreprehenderit molestiae ut ut quas totam\nnostrum rerum est autem sunt rem eveniet architecto"
+          },
+          {
+            "id": 2,
+            "title": "qui est esse",
+            "body": "est rerum tempore vitae\nsequi sint nihil reprehenderit dolor beatae ea dolores neque\nfugiat blanditiis voluptate porro vel nihil molestiae ut reiciendis\nqui aperiam non debitis possimus qui neque nisi nulla"
+          },
+          {
+            "id": 3,
+            "title": "ea molestias quasi exercitationem repellat qui ipsa sit aut",
+            "body": "et iusto sed quo iure\nvoluptatem occaecati omnis eligendi aut ad\nvoluptatem doloribus vel accusantium quis pariatur\nmolestiae porro eius odio et labore et velit aut"
+          }
+
+    ]
+}
+const rootReducer = (state = initState, action) => {
+    return state
+};
+
+export default rootReducer
+
+Home.js:
+========
+  import React, { Component } from 'react'
+import { Link } from 'react-router-dom'
+import Pokeball from './../pokeball.png'
+import { connect } from 'react-redux';
+// connects is a fucn which return HOC 
+
+class Home extends Component {
+  render(){
+    console.log(this.props)
+    const { posts } = this.props
+    const postList = posts.length ? (
+      posts.map(post => {
+        return (
+          <div className="post card" key={post.id}>
+              <img src={Pokeball} alt="a pokeball" />
+            <div className="card-content">
+              <Link to={'/posts/' + post.id}>
+                <span className="card-title red-text">{post.title}</span>
+              </Link>
+              <p>{post.body}</p>
+            </div>
+          </div>
+        )
+      })
+    ) : (
+      <div className="center">No posts to show</div>
+    );
+
+    return (
+      <div>
+        <div className="container">
+          <h4 className="center">Home</h4>
+          {postList}
+        </div>
+      </div>
+    )
+  }
+}
+
+const mapStateToProps = (state) => {
+  // this will take data from the state
+  // and put it into the component props
+  return {
+    // will create props.posts on the component
+    // from the state.posts
+    posts : state.posts
+  }
+}
+
+export default connect(mapStateToProps)(Home)
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
+load site: only 3 posts
+
+
+
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
