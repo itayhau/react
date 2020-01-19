@@ -290,12 +290,154 @@ export default connect(mapStateToProps)(Home)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
 load site: only 3 posts
 
-
-
+now let's handle the click on posts
+so in Post page, remove state + componentDidMount
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
+Post.js:
+========
+import React, { Component } from 'react'
+import { connect } from 'react-redux';
+// connects is a fucn which return HOC 
+
+class Post extends Component {
+
+  render() {
+
+    const post = this.props.post ? (
+      <div className="post">
+        <h4 className="center">{this.props.post.title}</h4>
+        <p>{this.props.post.body}</p>
+      </div>
+    ) : (
+      <div className="center">Loading post...</div>
+    );
+
+    return (
+      <div className="container">
+        {post}
+      </div>
+    )
+  }
+}
+
+const mapStateToProps = (state, ownProps) => {
+  // own props is the original props of the component
+  let id = ownProps.match.params.post_id // look in App.js route parameter
+
+  // this will take data from the state
+  // and put it into the component props
+  return {
+    // will create props.posts on the component
+    // from the state.posts
+    post : state.posts.find(p => p.id == id)
+  }
+}
+
+export default connect(mapStateToProps)(Post)
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
+now clicking on post will open the page wit the post
+
+now let's find a way to delete:
+dispatch
+add button
+  
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
+Post.js:
+========
+import React, { Component } from 'react'
+import { connect } from 'react-redux';
+// connects is a fucn which return HOC 
+
+class Post extends Component {
+
+  handleClick = () => {
+    this.props.deletePost(this.props.post.id);
+    this.props.history.push('/')
+  }
+  render() {
+    console.log(this.props) // show delete func
+    const post = this.props.post ? (
+      <div className="post">
+        <h4 className="center">{this.props.post.title}</h4>
+        <p>{this.props.post.body}</p>
+        <div className="center">
+          <button className="btn gray" onClick={this.handleClick}>
+            DELETE POST
+          </button>
+        </div>
+      </div>
+    ) : (
+      <div className="center">Loading post...</div>
+    );
+
+    return (
+      <div className="container">
+        {post}
+      </div>
+    )
+  }
+}
+
+const mapStateToProps = (state, ownProps) => {
+  // own props is the original props of the component
+  let id = ownProps.match.params.post_id // look in App.js route parameter
+
+  // this will take data from the state
+  // and put it into the component props
+  return {
+    // will create props.posts on the component
+    // from the state.posts
+    post : state.posts.find(p => p.id == id)
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    deletePost: (id) => { dispatch({type:'DELETE_POST',
+                          id: id})}
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Post)
+
+rootReducer.js:
+===============
+const initState = {
+    posts: [
+        {
+            "id": 1,
+            "title": "sunt aut facere repellat provident occaecati excepturi optio reprehenderit",
+            "body": "quia et suscipit\nsuscipit recusandae consequuntur expedita et cum\nreprehenderit molestiae ut ut quas totam\nnostrum rerum est autem sunt rem eveniet architecto"
+          },
+          {
+            "id": 2,
+            "title": "qui est esse",
+            "body": "est rerum tempore vitae\nsequi sint nihil reprehenderit dolor beatae ea dolores neque\nfugiat blanditiis voluptate porro vel nihil molestiae ut reiciendis\nqui aperiam non debitis possimus qui neque nisi nulla"
+          },
+          {
+            "id": 3,
+            "title": "ea molestias quasi exercitationem repellat qui ipsa sit aut",
+            "body": "et iusto sed quo iure\nvoluptatem occaecati omnis eligendi aut ad\nvoluptatem doloribus vel accusantium quis pariatur\nmolestiae porro eius odio et labore et velit aut"
+          }
+
+    ]
+}
+const rootReducer = (state = initState, action) => {
+    console.log(action) // show in console
+    // let's delete it from the state
+    if (action.type == 'DELETE_POST') {
+        let new_posts = state.posts.filter(p => p.id != action.id)
+        return {
+            ...state,
+            posts:new_posts
+        }
+    }
+    return state;
+
+};
+
+export default rootReducer  
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
